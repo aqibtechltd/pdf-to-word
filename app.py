@@ -19,7 +19,7 @@ st.set_page_config(
 
 # Load CSS
 with open("style.css") as f:
-    st.markdown(f'{f.read()}', unsafe_allow_html=True)
+    st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
 # Session state initialization
 if 'conversion_history' not in st.session_state:
@@ -30,9 +30,9 @@ if 'email_sent' not in st.session_state:
 # Header
 col1, col2, col3 = st.columns([1, 3, 1])
 with col2:
-    st.markdown("PDF Rocket 🚀Free PDF to Word Converter", 
+    st.markdown("<div class='header'><h1>PDF Rocket 🚀</h1><h2>Free PDF to Word Converter</h2></div>", 
                 unsafe_allow_html=True)
-    st.markdown("Convert your PDFs to editable Word documents in seconds", 
+    st.markdown("<p class='subheading'>Convert your PDFs to editable Word documents in seconds</p>", 
                 unsafe_allow_html=True)
 
 # Main content container
@@ -47,30 +47,30 @@ with main_container:
     
     col1, col2 = st.columns([3, 1])
     with col1:
-        st.markdown("Conversion Quality:", unsafe_allow_html=True)
+        st.markdown("<p class='option-label'>Conversion Quality:</p>", unsafe_allow_html=True)
     with col2:
         quality = st.selectbox("", options=list(quality_options.keys()), 
                               index=1, label_visibility="collapsed")
     
-    st.markdown(f"{quality_options[quality]}", 
+    st.markdown(f"<p class='quality-description'>{quality_options[quality]}</p>", 
                 unsafe_allow_html=True)
     
     # File uploader
-    st.markdown("", unsafe_allow_html=True)
-    st.markdown("Upload PDF Files", unsafe_allow_html=True)
-    st.markdown("Drag and drop files here (10MB max per file)", 
+    st.markdown("<div class='upload-container'>", unsafe_allow_html=True)
+    st.markdown("<p class='upload-title'>Upload PDF Files</p>", unsafe_allow_html=True)
+    st.markdown("<p class='upload-subtitle'>Drag and drop files here (10MB max per file)</p>", 
                 unsafe_allow_html=True)
     
     uploaded_files = st.file_uploader("Upload PDF files", 
                                      type=['pdf'], 
                                      accept_multiple_files=True,
                                      label_visibility="collapsed")
-    st.markdown("", unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
 
     # Conversion process
     if uploaded_files:
-        st.markdown("", unsafe_allow_html=True)
-        st.markdown("Converting Files", unsafe_allow_html=True)
+        st.markdown("<div class='conversion-section'>", unsafe_allow_html=True)
+        st.markdown("<h3>Converting Files</h3>", unsafe_allow_html=True)
         
         progress_bar = st.progress(0)
         converted_files = []
@@ -137,14 +137,14 @@ with main_container:
         
         # Download section
         if converted_files:
-            st.markdown("Download Converted Files", unsafe_allow_html=True)
+            st.markdown("<h3>Download Converted Files</h3>", unsafe_allow_html=True)
             
             for file in converted_files:
-                href = f'Download {file["converted_name"]}'
+                href = f'<a class="download-btn" href="data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,{file["data"]}" download="{file["converted_name"]}">Download {file["converted_name"]}</a>'
                 st.markdown(href, unsafe_allow_html=True)
             
             # Email option
-            st.markdown("Email Converted Files", unsafe_allow_html=True)
+            st.markdown("<h3>Email Converted Files</h3>", unsafe_allow_html=True)
             recipient_email = st.text_input("Enter email address:", key="email_input")
             
             if st.button("Send via Email"):
@@ -162,7 +162,7 @@ with main_container:
             
             # Batch download (all files in a single click)
             if len(converted_files) > 1:
-                st.markdown("Batch Download", unsafe_allow_html=True)
+                st.markdown("<h3>Batch Download</h3>", unsafe_allow_html=True)
                 st.markdown("Download all files with a single click:")
                 
                 # In a production app, you would create a zip file here
@@ -170,12 +170,12 @@ with main_container:
                 st.info("Note: In production, this would create a zip file with all conversions.")
                 st.button("Download All (Zip)")
         
-        st.markdown("", unsafe_allow_html=True)
+        st.markdown("</div>", unsafe_allow_html=True)
 
 # Conversion history section
 if st.session_state.conversion_history:
-    st.markdown("", unsafe_allow_html=True)
-    st.markdown("Recent Conversions", unsafe_allow_html=True)
+    st.markdown("<div class='history-section'>", unsafe_allow_html=True)
+    st.markdown("<h3>Recent Conversions</h3>", unsafe_allow_html=True)
     
     for item in reversed(st.session_state.conversion_history):
         col1, col2, col3 = st.columns([3, 2, 1])
@@ -184,10 +184,10 @@ if st.session_state.conversion_history:
         with col2:
             st.write(f"🕒 {item['timestamp']}")
         with col3:
-            href = f'Download'
+            href = f'<a class="history-download-btn" href="data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,{item["data"]}" download="{item["converted_name"]}">Download</a>'
             st.markdown(href, unsafe_allow_html=True)
     
-    st.markdown("", unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
 
 # Guide section
 with st.expander("How to Use PDF Rocket"):
@@ -208,7 +208,7 @@ with st.expander("How to Use PDF Rocket"):
     """)
 
 # Footer
-st.markdown("App Built By Aqib Chaudhary", unsafe_allow_html=True)
+st.markdown("<footer>App Built By Aqib Chaudhary</footer>", unsafe_allow_html=True)
 
 # Cleanup temporary files on session end
 cleanup_temp_files()
